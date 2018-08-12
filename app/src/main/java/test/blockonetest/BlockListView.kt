@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.ArrayAdapter
 import android.widget.ProgressBar
@@ -20,6 +21,7 @@ class BlockListView : Fragment() {
     var listOfStrings = mutableListOf<String>()
     var list : ListView? = null
     var adapter : ArrayAdapter<String>? = null
+    var blocks = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,15 @@ class BlockListView : Fragment() {
         this.list = view.findViewById<ListView>(R.id.list_view)
         this.adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, this.listOfStrings)
         this.list!!.adapter = adapter
+        this.list!!.setOnItemClickListener(object: AdapterView.OnItemClickListener{
+            override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                val fm = fragmentManager
+                val ft2 = fm!!.beginTransaction()
+                ft2.replace(R.id.content, BlockDetail.newInstance(blocks.get(p2)))
+                ft2.addToBackStack(null)
+                ft2.commit()
+            }
+        })
 
         BlockchainService.getInfo(object: NetworkCallback<Any>{
             override fun success(result: Any) {
@@ -47,6 +58,7 @@ class BlockListView : Fragment() {
                 for (index in 0..20) {
                     BlockchainService.getBlock((head - index), object : NetworkCallback<Any> {
                         override fun success(result: Any) {
+                            blocks.add(result as String)
                             val block = JSONTokener(result as String).nextValue() as JSONObject
                             add_block(block)
                         }
