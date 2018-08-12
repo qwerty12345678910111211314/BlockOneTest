@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
 
@@ -51,9 +52,17 @@ class BlockDetail : Fragment() {
         val rawDetailsArea = view.findViewById(R.id.raw_content) as LinearLayout
         val keys = block!!.keys()
         for(key in keys) {
-            val textView = TextView(view.context)
-            textView.text = "${key}: ${this.block?.getString(key)}"
-            rawDetailsArea.addView(textView)
+            val json = this.block?.get(key)
+            if(json is JSONArray){
+                val len = this.block!!.getJSONArray(key).length()
+                val textView = TextView(view.context)
+                textView.text = "${key}: $len"
+                rawDetailsArea.addView(textView)
+            }else{
+                val textView = TextView(view.context)
+                textView.text = "${key}: ${this.block?.getString(key)}"
+                rawDetailsArea.addView(textView)
+            }
         }
 
         val rawDetails = view.findViewById(R.id.show_raw_content) as Button

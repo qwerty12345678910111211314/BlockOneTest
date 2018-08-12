@@ -24,9 +24,14 @@ class BlockchainService(context: Context){
     private val INFO_ENDPOINT = "https://api.eosnewyork.io/v1/chain/get_info"
     private val BLOCK_ENDPOINT = "https://api.eosnewyork.io/v1/chain/get_block"
     private var mRequestQueue: RequestQueue
+    private var numRequests = 0
 
     init {
        this.mRequestQueue = Volley.newRequestQueue(context.applicationContext)
+    }
+
+    fun isFinished() : Boolean{
+        return (numRequests == 0)
     }
 
     fun getInfo(callback: NetworkCallback<Any>){
@@ -56,9 +61,9 @@ class BlockchainService(context: Context){
     }
 
     fun getBlock(blockID : Int, callback: NetworkCallback<Any>){
+
         val stringRequest = object : StringRequest(Request.Method.POST, this.BLOCK_ENDPOINT,
                 Response.Listener { response ->
-                    //Processing tickets..
                     try {
                         callback.success(result = response)
 
