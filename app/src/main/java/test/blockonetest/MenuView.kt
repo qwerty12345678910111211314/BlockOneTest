@@ -16,8 +16,7 @@ class MenuView : Fragment() {
         blockButton.setOnClickListener{
             val fm = this.fragmentManager
             val ft2 = fm!!.beginTransaction()
-            var list = BlockListView()
-            ft2.replace(R.id.content, list)
+            ft2.replace(R.id.content, BlockListView())
             ft2.addToBackStack(null)
             ft2.commit()
         }

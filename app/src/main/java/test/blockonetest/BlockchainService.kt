@@ -7,6 +7,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.*
 import org.json.JSONObject
+import org.json.JSONTokener
 
 interface NetworkCallback<T>{
     fun success(result: T)
@@ -31,12 +32,12 @@ class BlockchainService(context: Context){
     fun getInfo(callback: NetworkCallback<Any>){
         val stringRequest = object : StringRequest(Request.Method.POST, this.INFO_ENDPOINT,
                 Response.Listener { response ->
-                    //Processing tickets..
+                    Log.d(TAG,response)
                     try {
-                        val obj = JSONObject(response)
-                        callback.success(result = obj)
+                        callback.success(result = response)
 
                     } catch (e: Exception) {
+                        Log.d(TAG,e.toString())
                         callback.error(code = 1)
                     }
                 },
@@ -55,14 +56,15 @@ class BlockchainService(context: Context){
     }
 
     fun getBlock(blockID : Int, callback: NetworkCallback<Any>){
-        val stringRequest = object : StringRequest(Request.Method.POST, this.INFO_ENDPOINT,
+        val stringRequest = object : StringRequest(Request.Method.POST, this.BLOCK_ENDPOINT,
                 Response.Listener { response ->
                     //Processing tickets..
                     try {
-                        val obj = JSONObject(response)
-                        callback.success(result = obj)
+                        callback.success(result = response)
 
                     } catch (e: Exception) {
+                        Log.d(TAG,e.toString())
+                        Log.d(TAG,"Block Num $blockID")
                         callback.error(code = 1)
                     }
                 },
