@@ -16,8 +16,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val fm = this.supportFragmentManager
         val ft2 = fm!!.beginTransaction()
-        ft2.replace(R.id.content, MenuView())
-        ft2.addToBackStack(null)
-        ft2.commit()
+        ft2.add(R.id.content, MenuView()).commit()
     }
 }

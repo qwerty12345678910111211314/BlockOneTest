@@ -26,6 +26,7 @@ class BlockListView : Fragment() {
     var adapter : ArrayAdapter<String>? = null
     var blocks = mutableListOf<String>()
     var headNode : Int = 0
+    var running : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +38,28 @@ class BlockListView : Fragment() {
         this.adapter!!.notifyDataSetChanged()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(blocks.size < 20){
+            val toolbar = (activity as MainActivity).findViewById<Toolbar>(R.id.toolbar)
+            toolbar.findViewById<ProgressBar>(R.id.loading_bar).visibility = View.VISIBLE
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        val toolbar = (activity as MainActivity).findViewById<Toolbar>(R.id.toolbar)
+        toolbar.findViewById<ProgressBar>(R.id.loading_bar).visibility = View.GONE
+    }
+    override fun onStop() {
+        super.onStop()
+
+        val toolbar = (activity as MainActivity).findViewById<Toolbar>(R.id.toolbar)
+        toolbar.findViewById<ProgressBar>(R.id.loading_bar).visibility = View.GONE
+    }
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.block_list_view, container, false)
 
@@ -44,24 +67,24 @@ class BlockListView : Fragment() {
         list = view.findViewById(R.id.list_view)
         adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, this.listOfStrings)
         list!!.adapter = adapter
-        list!!.setOnItemClickListener(object: AdapterView.OnItemClickListener{
-            override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                val ft2 = fragmentManager!!.beginTransaction()
-                ft2.replace(R.id.content, BlockDetail.newInstance(blocks.get(p2)))
-                ft2.addToBackStack(null)
-                ft2.commit()
-            }
-        })
+        list!!.setOnItemClickListener { adapterView, view, i, l ->
+            val ft2 = fragmentManager!!.beginTransaction()
+            ft2.replace(R.id.content, BlockDetail.newInstance(blocks.get(i)))
+            ft2.addToBackStack(null)
+            ft2.commit()
+        }
+
         val toolbar = (activity as MainActivity).findViewById<Toolbar>(R.id.toolbar)
 
-            toolbar.findViewById<ProgressBar>(R.id.loading_bar).visibility = View.VISIBLE
+        toolbar.findViewById<ProgressBar>(R.id.loading_bar).visibility = View.VISIBLE
+        if(blocks.isEmpty()) {
             BlockchainService.getInfo(object : NetworkCallback<Any> {
                 override fun success(result: Any) {
                     var json = JSONTokener(result as String).nextValue() as JSONObject
                     var head = json.getInt("head_block_num")
                     if (headNode == 0 || (headNode != 0 && headNode != head)) {
                         headNode = head
-                        var running = 20
+                        running = 20
                         for (index in 0..20) {
                             BlockchainService.getBlock((head - index), object : NetworkCallback<Any> {
                                 override fun success(result: Any) {
@@ -69,7 +92,7 @@ class BlockListView : Fragment() {
                                     val block = JSONTokener(result).nextValue() as JSONObject
                                     add_block(block)
                                     running--
-                                    if(running == 0){
+                                    if (running == 0) {
                                         toolbar.findViewById<ProgressBar>(R.id.loading_bar).visibility = View.GONE
                                     }
                                 }
@@ -77,7 +100,7 @@ class BlockListView : Fragment() {
                                 override fun error(code: Int) {
                                     Log.d(TAG, "error $code")
                                     running--
-                                    if(running == 0){
+                                    if (running == 0) {
                                         toolbar.findViewById<ProgressBar>(R.id.loading_bar).visibility = View.GONE
                                     }
                                 }
@@ -92,7 +115,7 @@ class BlockListView : Fragment() {
             }
 
             )
-
+        }
 
             return view
         }

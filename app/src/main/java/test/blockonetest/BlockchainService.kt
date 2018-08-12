@@ -23,6 +23,7 @@ class BlockchainService(context: Context){
     private val TAG = "BlockchainService"
     private val INFO_ENDPOINT = "https://api.eosnewyork.io/v1/chain/get_info"
     private val BLOCK_ENDPOINT = "https://api.eosnewyork.io/v1/chain/get_block"
+    private val ABI_ENDPOINT = "https://api.eosnewyork.io/v1/chain/get_abi"
     private var mRequestQueue: RequestQueue
     private var numRequests = 0
 
@@ -81,6 +82,40 @@ class BlockchainService(context: Context){
         {
             override fun getBody(): ByteArray {
                 return "{\"block_num_or_id\":\"$blockID\"}".toByteArray()
+            }
+
+            override fun getBodyContentType(): String {
+                return "application/json"
+            }
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                val params = HashMap<String, String>()
+                return params
+            }
+        }
+        this.mRequestQueue.add(stringRequest)
+    }
+
+    fun getABI(accountNane : String, callback: NetworkCallback<Any>){
+
+        val stringRequest = object : StringRequest(Request.Method.POST, this.ABI_ENDPOINT,
+                Response.Listener { response ->
+                    try {
+                        callback.success(result = response)
+
+                    } catch (e: Exception) {
+                        Log.d(TAG,e.toString())
+                        callback.error(code = 1)
+                    }
+                },
+                Response.ErrorListener {
+                    Log.d("BlockchainService", "Network request failed..")
+                    callback.error(code = 2)
+                }
+        )
+        {
+            override fun getBody(): ByteArray {
+                return "{\"account_name\":\"$accountNane\"}".toByteArray()
             }
 
             override fun getBodyContentType(): String {

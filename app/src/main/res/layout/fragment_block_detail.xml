@@ -15,20 +15,43 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
     </LinearLayout>
-    <Button
-        android:text="Show Raw Content"
-        android:id="@+id/show_raw_content"
-        android:layout_width="match_parent"
-        android:layout_height="60dp" />
-        <ScrollView
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <Button
+                android:text="Show Raw Content"
+                android:id="@+id/show_raw_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="60dp" />
+            <Button
+                android:text="Show Transaction"
+                android:id="@+id/show_transactions"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp" />
+        </LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
             <LinearLayout
-                android:id="@+id/raw_content"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/transactions_area"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/raw_content"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
