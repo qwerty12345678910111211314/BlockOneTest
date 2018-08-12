@@ -32,13 +32,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivityTest {
+public class MainActivityTest3 {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void mainActivityTest() {
+    public void mainActivityTest3() {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.show_blocks), withText("View Blocks"),
                         childAtPosition(
@@ -59,63 +59,96 @@ public class MainActivityTest {
                         isDisplayed()));
         listView.check(matches(isDisplayed()));
 
-        ViewInteraction listView2 = onView(
-                allOf(withId(R.id.list_view),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        listView2.check(matches(isDisplayed()));
-
-        ViewInteraction listView3 = onView(
-                allOf(withId(R.id.list_view),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        listView3.check(matches(isDisplayed()));
-
         DataInteraction appCompatTextView = onData(anything())
                 .inAdapterView(allOf(withId(R.id.list_view),
                         childAtPosition(
                                 withClassName(is("android.widget.FrameLayout")),
                                 0)))
-                .atPosition(0);
+                .atPosition(3);
         appCompatTextView.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(
+                        childAtPosition(
+                                allOf(withId(R.id.text_area),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        textView.check(matches(isDisplayed()));
+
+        ViewInteraction textView2 = onView(
+                allOf(
+                        childAtPosition(
+                                allOf(withId(R.id.text_area),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        textView2.check(matches(isDisplayed()));
+
+        ViewInteraction textView3 = onView(
+                allOf(
+                        childAtPosition(
+                                allOf(withId(R.id.text_area),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                2),
+                        isDisplayed()));
+        textView3.check(matches(isDisplayed()));
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.show_raw_content),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                        0),
-                                1),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        1),
+                                0),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
-
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.show_raw_content), withText("Show Raw Content"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.FrameLayout")),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
 
         ViewInteraction button2 = onView(
                 allOf(withId(R.id.show_raw_content),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                        0),
-                                1),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        1),
+                                0),
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.show_raw_content), withText("Show Raw Content"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        1),
+                                0),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
+
+        ViewInteraction linearLayout = onView(
+                allOf(withId(R.id.raw_content),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class),
+                                        0),
+                                0),
+                        isDisplayed()));
+        linearLayout.check(matches(isDisplayed()));
+
+        ViewInteraction linearLayout2 = onView(
+                allOf(withId(R.id.raw_content),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class),
+                                        0),
+                                0),
+                        isDisplayed()));
+        linearLayout2.check(matches(isDisplayed()));
 
     }
 
